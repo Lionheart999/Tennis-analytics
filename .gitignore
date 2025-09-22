@@ -1,0 +1,10 @@
+/.dvc/tmp/
+/.dvc/cache/
+raw_videos/
+processed_videos/
+frames/
+cvat_exports/
+datasets/
+models/
+.DS_Store
+Thumbs.db
