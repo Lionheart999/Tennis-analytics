@@ -2,7 +2,7 @@
 /.dvc/tmp/
 /.dvc/cache/
 
-# Large data (use DVC for these)
+# Large data handled by DVC (don’t commit directly to Git)
 raw_videos/
 processed_videos/
 frames/
@@ -10,8 +10,6 @@ cvat_exports/
 datasets/*
 !datasets/**/*.dvc
 !datasets/.gitignore
-
-# Models and weights
 models/
 
 # Logs and notebooks
@@ -28,7 +26,3 @@ Thumbs.db
 
 # Editor configs
 .vscode/
-/processed_videos
-/frames
-/cvat_exports
-/models
