@@ -1,0 +1,10 @@
+ultralytics
+numpy
+opencv-python
+matplotlib
+pandas
+torchmetrics
+scikit-image
+shapely
+librosa
+faster-whisper

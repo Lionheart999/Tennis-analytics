@@ -1,0 +1,32 @@
+services:
+  tennis:
+    build:
+      context: .
+      args:
+        FLAVOR: cuda
+    image: tennis:latest
+    volumes:
+      - /home/$USER/tennis-analytics:/workspace
+    working_dir: /workspace
+    tty: true
+    stdin_open: true
+    profiles: ["gpu"]
+    # if Docker sees your GPU, this enables it
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
+
+  tennis-cpu:
+    build:
+      context: .
+      args:
+        FLAVOR: cpu
+    image: tennis-cpu:latest
+    volumes:
+      - /home/$USER/tennis-analytics:/workspace
+    working_dir: /workspace
+    tty: true
+    stdin_open: true
+    profiles: ["cpu"]
