@@ -1,0 +1,6 @@
+outs:
+- md5: 2678e3ede0cde9ad264a95f78fdbf492.dir
+  size: 26322476633
+  nfiles: 30187
+  hash: md5
+  path: job14

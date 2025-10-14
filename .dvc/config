@@ -1,6 +1,7 @@
 [core]
     remote = gdrive
+    autostage = true
 ['remote "gdrive"']
     url = gdrive://1PArriHwMkHNHNN9-zhCgEEkkdlaML_us
-    gdrive_client_id = 510361506686-1posrrr7v1ctgjj4brn3vid5eg5r68r5.apps.googleusercontent.com
-    gdrive_client_secret = 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
+    gdrive_use_service_account = true
+    gdrive_service_account_json_file_path = /home/lionheart/sa.json
