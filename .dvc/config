@@ -3,5 +3,7 @@
     autostage = true
 ['remote "gdrive"']
     url = gdrive://1PArriHwMkHNHNN9-zhCgEEkkdlaML_us
-    gdrive_use_service_account = true
-    gdrive_service_account_json_file_path = /home/lionheart/sa.json
+    gdrive_use_service_account = false
+    gdrive_client_id = 510361506686-2hopaeff7ohui7l31v7npjae4350got7.apps.googleusercontent.com
+    gdrive_client_secret = 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
+    gdrive_trash_only = false
