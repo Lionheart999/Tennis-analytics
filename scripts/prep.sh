@@ -1,24 +1,25 @@
 #!/usr/bin/env bash
-set -e
+set -euo pipefail
 
-for infile in raw_videos/*.mp4; do
-  [ -e "$infile" ] || continue   # skip if no files
+mkdir -p processed_videos
+
+for infile in ../raw_videos/R2025_Sinner_v_Alcaraz.mp4; do
+  [[ -e "$infile" ]] || continue
   base=$(basename "$infile" .mp4)
 
   echo ">>> Processing $infile"
 
-  # 1) CFR at 25 fps
+  # 1) Re-encode to constant 25 fps (CFR) + sensible keyframe interval
   ffmpeg -y -i "$infile" \
-    -c:v libx264 -preset fast -crf 23 -c:a aac -r 25 \
-    processed_videos/${base}_25fps.mp4
+    -vf "fps=25" \
+    -c:v libx264 -preset fast -crf 23 \
+    -x264-params "keyint=50:min-keyint=50:scenecut=0" \
+    -c:a aac \
+    "../processed_videos/${base}_25fps.mp4"
 
-  # 2) Split into 10-min chunks
-  ffmpeg -y -i processed_videos/${base}_25fps.mp4 \
-    -c copy -map 0 -segment_time 600 -f segment \
-    processed_videos/${base}_part_%03d.mp4
-
-  # 3) Extract 5 fps frames
-  mkdir -p frames/$base
-  ffmpeg -y -i processed_videos/${base}_25fps.mp4 \
-    -vf fps=5 frames/$base/frame_%06d.jpg
+  # 2) Split into exact 10-min chunks (still keyframe-aligned, but now predictable)
+  ffmpeg -y -i "../processed_videos/${base}_25fps.mp4" \
+    -map 0 -c copy \
+    -f segment -segment_time 600 -reset_timestamps 1 \
+    "../processed_videos/${base}_part_%03d.mp4"
 done

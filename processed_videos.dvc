@@ -1,6 +1,6 @@
 outs:
-- md5: c2fcfbee9bcd1ef7a5109644f171354b.dir
-  size: 29686340118
-  nfiles: 77
+- md5: be639464ff67fa296473e4e22e4c7380.dir
+  size: 39944278858
+  nfiles: 74
   hash: md5
   path: processed_videos
