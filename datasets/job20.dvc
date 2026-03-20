@@ -1,0 +1,6 @@
+outs:
+- md5: 1200053b99000990d94752cdeec4f8c6.dir
+  size: 35877180593
+  nfiles: 30007
+  hash: md5
+  path: job20
