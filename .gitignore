@@ -11,7 +11,7 @@ datasets/*
 !datasets/**/*.dvc
 !datasets/.gitignore
 models/
-runs/
+venv/
 
 # Logs and notebooks
 logs/
