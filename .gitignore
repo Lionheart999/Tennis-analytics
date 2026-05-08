@@ -10,7 +10,6 @@ cvat_exports/
 datasets/*
 !datasets/**/*.dvc
 !datasets/.gitignore
-models/
 venv/
 
 # Video files anywhere in the repo
