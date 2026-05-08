@@ -3,7 +3,7 @@ set -euo pipefail
 
 mkdir -p processed_videos
 
-for infile in ../raw_videos/R2025_Sinner_v_Alcaraz.mp4; do
+for infile in ../raw_videos/U2024_Sinner_v_Fritz.mp4; do
   [[ -e "$infile" ]] || continue
   base=$(basename "$infile" .mp4)
 
@@ -20,6 +20,6 @@ for infile in ../raw_videos/R2025_Sinner_v_Alcaraz.mp4; do
   # 2) Split into exact 10-min chunks (still keyframe-aligned, but now predictable)
   ffmpeg -y -i "../processed_videos/${base}_25fps.mp4" \
     -map 0 -c copy \
-    -f segment -segment_time 600 -reset_timestamps 1 \
+    -f segment -segment_time 900 -reset_timestamps 1 \
     "../processed_videos/${base}_part_%03d.mp4"
 done
