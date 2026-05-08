@@ -1,0 +1,7 @@
+feature,val_f1,f1_drop
+baseline,0.9292,0.0
+ball,0.9346,-0.0054
+player_mag,0.9238,0.0054
+player_dir,0.9232,0.006
+player_roll,0.9313,-0.0021
+court,0.8963,0.0328

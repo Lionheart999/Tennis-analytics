@@ -1,0 +1,7 @@
+model,match,surface,gt_segments,gt_rally_min,pred_segments,pred_rally_min,precision,recall,f1,fully_captured,partially_cut,fully_missed
+v1,A2025_Sinner_v_Shelton,Hard,301,33.3,341,46.5,0.816,0.984,0.892,271,28,2
+v1,R2025_Musetti_v_Tiafoe,Clay,306,36.3,361,48.0,0.805,0.933,0.864,201,89,16
+v1,W2019_Federer_v_Nadal,Grass,349,33.7,387,51.6,0.75,0.981,0.85,315,32,2
+v2,A2025_Sinner_v_Shelton,Hard,301,33.3,323,39.3,0.856,0.991,0.919,288,13,0
+v2,R2025_Musetti_v_Tiafoe,Clay,306,36.3,338,39.9,0.857,0.936,0.895,279,15,12
+v2,W2019_Federer_v_Nadal,Grass,349,33.7,366,42.5,0.798,0.982,0.881,325,20,4

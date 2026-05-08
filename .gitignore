@@ -13,6 +13,13 @@ datasets/*
 models/
 venv/
 
+# Video files anywhere in the repo
+*.mp4
+*.mkv
+*.avi
+*.mov
+*.webm
+
 # Logs and notebooks
 logs/
 .ipynb_checkpoints/

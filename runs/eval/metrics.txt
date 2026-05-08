@@ -1,0 +1,10 @@
+Val set:   63,089 windows  (rally=12.8%)
+AUC-ROC:   0.9936
+Accuracy:  0.9813
+Precision: 0.9113
+Recall:    0.9461
+F1:        0.9284
+
+Confusion matrix (threshold=0.5):
+  TN=54,269  FP=744
+  FN=435  TP=7,641
