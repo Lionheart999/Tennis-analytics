@@ -34,4 +34,8 @@ Thumbs.db
 
 # Editor configs
 .vscode/
-/processed_videos
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
