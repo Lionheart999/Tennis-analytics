@@ -39,13 +39,13 @@ VAL_MATCHES = {
 }
 
 SEED         = 42
-BATCH        = 128      # NT-Xent needs large batches
+BATCH        = 256      # NT-Xent needs large batches
 EPOCHS       = 50
 LR           = 3e-4
 WEIGHT_DECAY = 1e-4
 TEMPERATURE  = 0.5
 FRAME_STRIDE = 5        # sample every 5th frame (~5 fps from 25 fps source)
-IMG_SIZE     = 112
+IMG_SIZE     = 224
 PATIENCE     = 8
 
 

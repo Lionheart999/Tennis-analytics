@@ -256,5 +256,5 @@ def expand_labels(segments_path, video_path, sample_every=1):
 
 
 if __name__ == '__main__':
-    VIDEO = '/home/lionheart/tennis-analytics/raw_videos/A2022_Nadal_v_Medvedev_h264.mp4'
+    VIDEO = '/home/ubuntu/Tennis-analytics/raw_videos/A2025_Sinner_v_Zverev.mp4'
     segs  = label_segments(VIDEO)

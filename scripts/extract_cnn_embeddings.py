@@ -32,7 +32,7 @@ FEATURES_DIR   = ROOT / 'features'
 EMBEDDINGS_DIR = ROOT / 'embeddings'
 MODEL_DIR      = ROOT / 'models'
 
-IMG_SIZE   = 112    # must match simclr_pretrain.py
+IMG_SIZE   = 224    # must match simclr_pretrain.py
 BATCH_SIZE = 64
 
 
