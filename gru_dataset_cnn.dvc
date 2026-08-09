@@ -1,0 +1,6 @@
+outs:
+- md5: 7fa20c895d6a9447ed44047de27892fa.dir
+  size: 8307775
+  nfiles: 3
+  hash: md5
+  path: gru_dataset_cnn

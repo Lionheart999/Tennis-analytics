@@ -10,12 +10,14 @@ Usage:
     python scripts/eval_model_cnn.py
 """
 
+import pickle
 import numpy as np
 import torch
 import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
+from torch.utils.data import DataLoader
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, roc_curve, auc
 import sys
 
@@ -26,26 +28,34 @@ OUT_DIR     = ROOT / 'runs' / 'eval'
 
 sys.path.insert(0, str(ROOT / 'scripts'))
 from train_gru import RallyGRU
+from build_dataset_cnn import EmbeddingWindowDataset
 
 BATCH = 512
 
 
-def get_probs(model, X, device):
+def get_probs(model, loader, device):
     model.eval()
-    probs = []
+    all_probs, all_labels = [], []
     with torch.no_grad():
-        for i in range(0, len(X), BATCH):
-            x = torch.tensor(X[i:i + BATCH]).to(device)
-            probs.append(torch.sigmoid(model(x)).cpu().numpy())
-    return np.concatenate(probs)
+        for X, y in loader:
+            X = X.to(device)
+            all_probs.append(torch.sigmoid(model(X)).cpu().numpy())
+            all_labels.append(y.numpy())
+    return np.concatenate(all_probs), np.concatenate(all_labels)
 
 
 def main():
     OUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
-    X_val = np.load(DATASET_DIR / 'X_val.npy')
-    y_val = np.load(DATASET_DIR / 'y_val.npy')
+    with open(DATASET_DIR / 'val_index.pkl', 'rb') as f:
+        val_idx = pickle.load(f)
+    with open(DATASET_DIR / 'scaler.pkl', 'rb') as f:
+        scaler = pickle.load(f)
+
+    val_ds     = EmbeddingWindowDataset(val_idx, scaler)
+    val_loader = DataLoader(val_ds, batch_size=BATCH, num_workers=4)
+    y_val      = np.array([lbl for _, _, lbl in val_idx], dtype=np.float32)
 
     cfg = {}
     for line in (MODEL_DIR / 'rally_gru_cnn_config.txt').read_text().splitlines():
@@ -57,7 +67,7 @@ def main():
                                      map_location=device, weights_only=True))
 
     print(f"Running inference on val set ({len(y_val):,} windows) ...")
-    probs = get_probs(model, X_val, device)
+    probs, _ = get_probs(model, val_loader, device)
     preds = (probs >= 0.5).astype(int)
 
     cm  = confusion_matrix(y_val, preds)

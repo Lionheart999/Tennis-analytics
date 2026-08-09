@@ -2,9 +2,11 @@
 Train the GRU classifier on SimCLR CNN embeddings (comparison baseline).
 
 Same architecture and hyperparameters as train_gru.py, but reads from
-gru_dataset_cnn/ (512-d embeddings) instead of gru_dataset/ (34 features).
+gru_dataset_cnn/ (512-d embeddings via EmbeddingWindowDataset) instead of
+gru_dataset/ (34 hand-engineered features).
 
 Usage:
+    python scripts/build_dataset_cnn.py   # builds index + scaler
     python scripts/train_gru_cnn.py
 
 Saves:
@@ -12,11 +14,12 @@ Saves:
     models/rally_gru_cnn_config.txt
 """
 
+import pickle
 import random
 import numpy as np
 import torch
 import torch.nn as nn
-from torch.utils.data import DataLoader, TensorDataset
+from torch.utils.data import DataLoader
 from pathlib import Path
 import sys
 
@@ -26,6 +29,9 @@ MODEL_DIR   = ROOT / 'models'
 
 sys.path.insert(0, str(ROOT / 'scripts'))
 from train_gru import RallyGRU, evaluate, HIDDEN, LAYERS, BATCH, EPOCHS, LR, PATIENCE, SEED
+from build_dataset_cnn import EmbeddingWindowDataset
+
+INPUT_SIZE = 512   # SimCLR ResNet-18 encoder output
 
 
 def main():
@@ -39,27 +45,28 @@ def main():
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     print(f"Device: {device}\n")
 
-    X_train = torch.tensor(np.load(DATASET_DIR / 'X_train.npy'))
-    y_train = torch.tensor(np.load(DATASET_DIR / 'y_train.npy'))
-    X_val   = torch.tensor(np.load(DATASET_DIR / 'X_val.npy'))
-    y_val   = torch.tensor(np.load(DATASET_DIR / 'y_val.npy'))
+    with open(DATASET_DIR / 'train_index.pkl', 'rb') as f:
+        train_idx = pickle.load(f)
+    with open(DATASET_DIR / 'val_index.pkl', 'rb') as f:
+        val_idx = pickle.load(f)
+    with open(DATASET_DIR / 'scaler.pkl', 'rb') as f:
+        scaler = pickle.load(f)
 
-    print(f"Train: {X_train.shape}  rally={y_train.mean():.1%}")
-    print(f"Val:   {X_val.shape}    rally={y_val.mean():.1%}\n")
+    train_ds = EmbeddingWindowDataset(train_idx, scaler)
+    val_ds   = EmbeddingWindowDataset(val_idx,   scaler)
 
-    pos_weight = torch.tensor(
-        [(1 - y_train.mean()) / y_train.mean()]
-    ).to(device)
+    y_train_mean = sum(lbl for _, _, lbl in train_idx) / len(train_idx)
+    y_val_mean   = sum(lbl for _, _, lbl in val_idx)   / len(val_idx)
+    print(f"Train windows: {len(train_ds):,}  rally={y_train_mean:.1%}")
+    print(f"Val windows:   {len(val_ds):,}  rally={y_val_mean:.1%}\n")
+
+    pos_weight = torch.tensor([(1 - y_train_mean) / y_train_mean]).to(device)
     print(f"pos_weight: {pos_weight.item():.2f}\n")
 
-    train_loader = DataLoader(
-        TensorDataset(X_train, y_train), batch_size=BATCH, shuffle=True
-    )
-    val_loader = DataLoader(
-        TensorDataset(X_val, y_val), batch_size=BATCH
-    )
+    train_loader = DataLoader(train_ds, batch_size=BATCH, shuffle=True,  num_workers=4, pin_memory=(device.type=='cuda'))
+    val_loader   = DataLoader(val_ds,   batch_size=BATCH, num_workers=4, pin_memory=(device.type=='cuda'))
 
-    model     = RallyGRU(input_size=X_train.shape[2]).to(device)
+    model     = RallyGRU(input_size=INPUT_SIZE).to(device)
     criterion = nn.BCEWithLogitsLoss(pos_weight=pos_weight)
     optimizer = torch.optim.Adam(model.parameters(), lr=LR)
     scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
@@ -76,6 +83,7 @@ def main():
     for epoch in range(1, EPOCHS + 1):
         model.train()
         train_loss = 0.0
+        n_samples  = 0
         for X, y in train_loader:
             X, y = X.to(device), y.to(device)
             optimizer.zero_grad()
@@ -84,7 +92,8 @@ def main():
             nn.utils.clip_grad_norm_(model.parameters(), 1.0)
             optimizer.step()
             train_loss += loss.item() * len(y)
-        train_loss /= len(y_train)
+            n_samples  += len(y)
+        train_loss /= n_samples
 
         val_loss, val_acc, val_f1 = evaluate(model, val_loader, criterion, device)
         scheduler.step(1.0 - val_f1)
@@ -109,10 +118,10 @@ def main():
                 break
 
     (MODEL_DIR / 'rally_gru_cnn_config.txt').write_text(
-        f"input_size={X_train.shape[2]}\n"
+        f"input_size={INPUT_SIZE}\n"
         f"hidden={HIDDEN}\n"
         f"layers={LAYERS}\n"
-        f"window={75}\n"
+        f"window=75\n"
     )
 
     import csv

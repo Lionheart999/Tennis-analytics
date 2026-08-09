@@ -1,0 +1,40 @@
+Held-out test set evaluation
+============================================================
+
+A2025_Sinner_v_Shelton_preview — CNN GRU
+  n=274,637 rally=21.8% AUC=0.9828 F1=0.8929
+
+A2025_Sinner_v_Shelton_preview — Hand-engineered GRU
+  n=274,637 rally=21.8% AUC=0.9936 F1=0.9207
+
+R2025_Musetti_v_Tiafoe_h264 — CNN GRU
+  n=277,952 rally=19.6% AUC=0.9857 F1=0.8868
+
+R2025_Musetti_v_Tiafoe_h264 — Hand-engineered GRU
+  n=277,952 rally=19.6% AUC=0.9857 F1=0.8823
+
+W2019_Federer_v_Nadal_h264 — CNN GRU
+  n=278,374 rally=18.1% AUC=0.9846 F1=0.8690
+
+W2019_Federer_v_Nadal_h264 — Hand-engineered GRU
+  n=278,374 rally=18.1% AUC=0.9917 F1=0.9062
+
+============================================================
+AGGREGATE (all held-out matches)
+
+CNN GRU (SimCLR embeddings):
+  Windows:   830,963  rally=19.8%
+  AUC-ROC:   0.9843
+  Accuracy:  0.9532
+  Precision: 0.8721
+  Recall:    0.8954
+  F1:        0.8836
+
+
+Hand-engineered GRU (34 features):
+  Windows:   830,963  rally=19.8%
+  AUC-ROC:   0.9895
+  Accuracy:  0.9615
+  Precision: 0.8947
+  Recall:    0.9135
+  F1:        0.9040

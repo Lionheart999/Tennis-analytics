@@ -1,0 +1,4 @@
+input_size=34
+hidden=64
+layers=2
+window=75

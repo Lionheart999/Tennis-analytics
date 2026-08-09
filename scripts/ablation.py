@@ -196,7 +196,7 @@ def run_ablation(X_train, y_train, X_val, y_val, device, baseline_f1,
     rows   = [r for r in results if r['feature'] != 'baseline']
     labels = [r['feature'] for r in rows]
     drops  = [r['f1_drop'] for r in rows]
-    colors = ['#d62728' if d > 0 else '#2ca02c' for d in drops]
+    colors = ['#2ca02c' if d > 0 else '#d62728' for d in drops]
 
     fig_w  = max(7, len(labels) * 0.55)
     fig, ax = plt.subplots(figsize=(fig_w, 4))
